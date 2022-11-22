@@ -1,0 +1,36 @@
+Kljucne reci:
+    main
+    ε
+    int
+    char
+    float
+    case
+    when
+Identifikatori:
+    niz slova,cifara i znaka '_' u kojem przi znak nije cifra
+Konstante:
+    1. Konstante tipa int:
+    [<oznaka_osnove>]<niz_cifara_zadate_osnove>
+    Pri čemu oznaka osnove može biti
+    0oct – za brojni sistem sa osnovom 8,
+    0hex – za brojni sistem sa osnovom 16,
+    0dec – za brojni sistem sa osnovom 10,
+    Ukoliko je oznaka osnove izostavljena, podrazumeva se osnova 10.
+    2. Konstante tipa float:
+    <niz_cifara>.[<niz_cifara>][E[±]<niz_cifara>]
+    3. Konstante tipa char:
+    ’<znak>’
+Operatori:
+    +
+    -
+    =
+Separatori:
+    (
+    )
+    ;
+    {
+    }
+    :
+    ,
+Komentari:
+    Niz karaktera izmedju simbola %% i %%
