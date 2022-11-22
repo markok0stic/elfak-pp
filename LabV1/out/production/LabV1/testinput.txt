@@ -2,7 +2,7 @@ main ()
 {
    %%ovo je komentar%%
     _sad999_ = 33;
-    _a23=’string je ovo’
+    _a23=’s’
     a45;
     case a45
     when 0oct33:

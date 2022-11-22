@@ -54,6 +54,7 @@ dec = 0dec
 : { return new Yytoken( sym.COLON, yytext(), yyline, yycolumn ); }
 , { return new Yytoken( sym.COMMA, yytext(), yyline, yycolumn ); }
 
+
 //kljucne reci
 {slovo}+ { return getKW(); }
 
@@ -63,7 +64,7 @@ dec = 0dec
 //konstante
 ({hex}|{oct}|{dec}|""*){cifra}+ { return new Yytoken( sym.CONST, yytext(), yyline, yycolumn ); }
 {cifra}+\.{cifra}+(E(\+|\-){cifra}+) { return new Yytoken( sym.CONST, yytext(), yyline, yycolumn ); }
-’[^]’ { return new Yytoken( sym.CONST,yytext(), yyline, yycolumn ); }
+\’.\’ { return new Yytoken( sym.CONST,yytext(), yyline, yycolumn ); }
 
 //obrada gresaka
 . { if (yytext() != null && yytext().length() > 0) System.out.println( "ERROR: " + yytext() ); }
