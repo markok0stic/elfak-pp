@@ -14,6 +14,7 @@
 return new Yytoken( sym.EOF, null, yyline, yycolumn);
 %eofval}
 
+
 %{
 //dodatni clanovi generisane klase
 KWTable kwTable = new KWTable();
@@ -53,6 +54,7 @@ dec = 0dec
 ; { return new Yytoken( sym.SEMICOLON, yytext(), yyline, yycolumn ); }
 : { return new Yytoken( sym.COLON, yytext(), yyline, yycolumn ); }
 , { return new Yytoken( sym.COMMA, yytext(), yyline, yycolumn ); }
+# { return new Yytoken( sym.HASHTAG, yytext(), yyline, yycolumn ); }
 
 
 //kljucne reci

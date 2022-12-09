@@ -1,9 +1,8 @@
-main ()
-{
-   %%ovo je komentar%%
-    _sad999_ = 33.312231E+3;
-    _a23=’s’
-    a45;
-    case a45
-    when 0oct33:
-}
+CS → case ( ID ) { WSL }
+WSL →  WS  WSL’
+WSL’ →  WS WSL’
+WSL’ → ε
+WS → when CONST : S
+S → CS
+S → ID = ID ;
+S → ID = CONST ;

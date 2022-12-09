@@ -20,4 +20,5 @@ public class sym {
 	public final static int SEMICOLON = 17;
 	public final static int COMMA = 18;
 	public final static int COLON = 19;
+	public final static int HASHTAG = 19;
 }
