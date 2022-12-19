@@ -22,7 +22,7 @@ parser code {:
 
 
 //Terminali
-terminal MAIN, INT, CHAR, FLOAT, CASE, WHEN, ID, CONST, PLUS, MINUS, LEFTPAR, RIGHTPAR, LEFTCURLYPAR, RIGHTCURLYPAR, ASSIGN, SEMICOLON, COMMA, COLON, HASHTAG, N;
+terminal MAIN, INT, CHAR, FLOAT, CASE, WHEN, ID, CONST, PLUS, MINUS, LEFTPAR, RIGHTPAR, LEFTCURLYPAR, RIGHTCURLYPAR, ASSIGN, SEMICOLON, COMMA, COLON;
 //Neterminali
 non terminal Program, Block, Declarations, VarDecl, NameList, Type, StatementList, Statement, CaseStatement, WhenStatementList, WhenStatement, Expression, AddOperator, Term;
 
@@ -42,7 +42,7 @@ Declarations ::= Declarations VarDecl
             {:
                System.out.println( "Redukcija po smeni 3." );
             :}
-            | N
+            |
              {:
                 System.out.println( "Redukcija po smeni 4." );
              :};

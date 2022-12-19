@@ -1,2 +1,7 @@
-main ()
-.
+main () 
+{
+    int a45;
+    a45 = ( a55 + 3 )
+    case a45;
+    when 0oct33:
+}
