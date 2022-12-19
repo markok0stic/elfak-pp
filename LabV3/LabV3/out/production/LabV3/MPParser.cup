@@ -1,0 +1,148 @@
+//import sekcija
+
+import java_cup.runtime.*;
+import java.io.*;
+
+parser code {:
+   public static void main( String[] args )
+   {
+      try
+	  {
+		   FileReader file = new FileReader( args[0] );
+		   Scanner scanner = new MPLexer( file );
+		   MPParser parser = new MPParser( scanner );
+		   parser.parse();
+	  }
+	  catch( Exception e )
+	  {
+		   e.printStackTrace();
+	  }
+   }
+:};
+
+
+//Terminali
+terminal MAIN, INT, CHAR, FLOAT, CASE, WHEN, ID, CONST, PLUS, MINUS, LEFTPAR, RIGHTPAR, LEFTCURLYPAR, RIGHTCURLYPAR, ASSIGN, SEMICOLON, COMMA, COLON, HASHTAG, N;
+//Neterminali
+non terminal Program, Block, Declarations, VarDecl, NameList, Type, StatementList, Statement, CaseStatement, WhenStatementList, WhenStatement, Expression, AddOperator, Term;
+
+
+//Gramatika
+Program ::= MAIN LEFTPAR RIGHTPAR Block
+            {:
+               System.out.println( "Redukcija po smeni 1." );
+            :};
+
+Block ::= LEFTCURLYPAR Declarations StatementList RIGHTCURLYPAR
+             {:
+                System.out.println( "Redukcija po smeni 2." );
+             :};
+
+Declarations ::= Declarations VarDecl
+            {:
+               System.out.println( "Redukcija po smeni 3." );
+            :}
+            | N
+             {:
+                System.out.println( "Redukcija po smeni 4." );
+             :};
+
+VarDecl ::= Type NameList SEMICOLON
+                {:
+                   System.out.println( "Redukcija po smeni 5 ." );
+                :};
+
+NameList ::= ID
+             {:
+                System.out.println( "Redukcija po smeni 6." );
+             :} 
+           | NameList COMMA ID
+             {:
+                System.out.println( "Redukcija po smeni 7." );
+             :};
+
+Type ::= INT
+        {:
+           System.out.println( "Redukcija po smeni 8." );
+        :}
+      | CHAR
+        {:
+           System.out.println( "Redukcija po smeni 9." );
+        :}
+        | FLOAT
+        {:
+           System.out.println( "Redukcija po smeni 10." );
+        :};
+
+StatementList ::= StatementList Statement
+         {:
+            System.out.println( "Redukcija po smeni 11." );
+         :}
+          | Statement
+        {:
+           System.out.println( "Redukcija po smeni 12." );
+        :};
+
+Statement ::= CaseStatement
+           {:
+              System.out.println( "Redukcija po smeni 13." );
+           :}
+         | ID ASSIGN Expression SEMICOLON
+           {:
+              System.out.println( "Redukcija po smeni 14." );
+           :}
+           | Block
+           {:
+              System.out.println( "Redukcija po smeni 15." );
+           :};
+
+CaseStatement ::= CASE LEFTPAR Expression RIGHTPAR LEFTCURLYPAR WhenStatementList RIGHTCURLYPAR
+            {:
+               System.out.println( "Redukcija po smeni 16." );
+            :};
+
+WhenStatementList ::= WhenStatementList WhenStatement
+         {:
+            System.out.println( "Redukcija po smeni 17." );
+         :}
+         | WhenStatement
+           {:
+              System.out.println( "Redukcija po smeni 18." );
+           :};
+
+WhenStatement ::= WHEN CONST COLON Statement
+         {:
+            System.out.println( "Redukcija po smeni 19." );
+         :};
+
+Expression ::= Expression AddOperator Term
+          {:
+             System.out.println( "Redukcija po smeni 20." );
+          :}
+          | Term
+           {:
+             System.out.println( "Redukcija po smeni 21." );
+           :}
+          ;
+
+AddOperator ::= PLUS
+           {:
+              System.out.println( "Redukcija po smeni 22." );
+           :}
+           | MINUS
+           {:
+              System.out.println( "Redukcija po smeni 23." );
+           :};
+
+Term ::= ID
+           {:
+              System.out.println( "Redukcija po smeni 24." );
+           :}
+         | CONST
+           {:
+              System.out.println( "Redukcija po smeni 25." );
+           :}
+            | LEFTPAR Expression RIGHTPAR
+           {:
+              System.out.println( "Redukcija po smeni 26." );
+           :};
