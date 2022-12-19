@@ -1,7 +1,10 @@
-main () 
+main ()
 {
     int a45;
-    a45 = ( a55 + 3 )
+    a45 = ( a55 + 3 );
+    z3 = dd7f;
     case a45;
-    when 0oct33:
+    when 0oct33: {
+    case ( z3 ) { when 3: a2=2;}
+    }
 }
