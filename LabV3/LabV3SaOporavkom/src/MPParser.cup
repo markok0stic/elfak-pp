@@ -1,0 +1,152 @@
+//import sekcija
+
+import java_cup.runtime.*;
+import java.io.*;
+
+parser code {:
+ public int errNo = 0;
+
+   public static void main( String[] args )
+   {
+      try
+	  {
+		   FileReader file = new FileReader( args[0] );
+		   Scanner scanner = new MPLexer( file );
+		   MPParser parser = new MPParser( scanner );
+		   parser.parse();
+		   if ( parser.errNo == 0 )
+		      System.out.println( "Analiza zavrsena. U kodu nema gresaka." );
+		   else
+		      System.out.println( "Analiza zavrsena. Broj gresaka: " + parser.errNo );
+	  }
+	  catch( Exception e )
+	  {
+		   e.printStackTrace();
+	  }
+   }
+
+   public void syntax_error(Symbol cur_token)
+   {
+
+   }
+
+   public void report_error(String message, Object info)
+   {
+   	   System.out.print( message );
+   }
+
+   public int getLine()
+   {
+   	  return (( MPLexer) getScanner()).getLine();
+   }
+:};
+
+
+//Terminali
+terminal MAIN, INT, CHAR, FLOAT, CASE, WHEN, ID, CONST, PLUS, MINUS, LEFTPAR, RIGHTPAR, LEFTCURLYPAR, RIGHTCURLYPAR, ASSIGN, SEMICOLON, COMMA, COLON;
+//Neterminali
+non terminal Program, Block, Declarations, VarDecl, NameList, Type, StatementList, Statement, CaseStatement, WhenStatementList, WhenStatement, Expression, AddOperator, Term;
+
+
+//Gramatika
+Program ::= MAIN LEFTPAR RIGHTPAR Block
+            | MAIN LEFTPAR RIGHTPAR error
+            {:
+               System.out.println( "Nedostaje implementacija funckije!" );
+               parser.errNo++;
+            :};
+
+Block ::= LEFTCURLYPAR Declarations StatementList RIGHTCURLYPAR
+          | LEFTCURLYPAR Declarations StatementList error
+          {:
+                System.out.println( "Nedostaje '}'!" );
+                parser.errNo++;
+          :}
+            | LEFTCURLYPAR Declarations error
+          {:
+                System.out.println( "Nedostaje telo funkcije!" );
+                parser.errNo++;
+          :}
+            | LEFTCURLYPAR error
+          {:
+                System.out.println( "Nedostaje telo funkcije!" );
+                parser.errNo++;
+          :};
+
+Declarations ::= Declarations VarDecl;
+
+VarDecl ::= Type NameList SEMICOLON
+            | Type NameList error
+          {:
+                System.out.println( "Greska u liniji " + parser.getLine() + ": " +
+                "Nedostaje ';' ." );
+                parser.errNo++;
+          :}
+            | Type error
+          {:
+                System.out.println( "Greska u liniji " + parser.getLine() + ": " +
+                "Nedostaje identifikator." );
+                parser.errNo++;
+          :};
+
+NameList ::= ID
+           | NameList COMMA ID;
+
+Type ::= INT
+      | CHAR
+      | FLOAT;
+
+StatementList ::= StatementList Statement
+          | Statement;
+
+Statement ::= CaseStatement
+         | ID ASSIGN Expression SEMICOLON
+         | ID ASSIGN Expression error
+         {:
+             System.out.println( "Nedostaje ;." );
+         :}
+         | Block;
+
+CaseStatement ::= CASE LEFTPAR Expression RIGHTPAR LEFTCURLYPAR WhenStatementList RIGHTCURLYPAR
+            | CASE LEFTPAR Expression RIGHTPAR LEFTCURLYPAR WhenStatementList error
+            {:
+                System.out.println( "Nedostaje '}'." );
+            :}
+            | CASE LEFTPAR Expression RIGHTPAR error
+            {:
+                System.out.println( "Nedostaje '{'." );
+            :};
+
+WhenStatementList ::= WhenStatementList WhenStatement
+         | WhenStatement;
+
+WhenStatement ::= WHEN CONST COLON Statement
+            | WHEN CONST error
+            {:
+                System.out.println( "Nedostaje ':'." );
+            :};
+
+Expression ::= Expression AddOperator Term
+          | Expression AddOperator error
+           {:
+             System.out.println( "Nedostaje Term nakon operatora." );
+           :};
+
+AddOperator ::= PLUS
+           | MINUS;
+
+Term ::= ID
+         | CONST
+         | LEFTPAR Expression RIGHTPAR
+         | LEFTPAR Expression error
+       {:
+          System.out.println( "Greska u liniji " + parser.getLine() + ": " +
+                     	"Nedostaje ')'.");
+                       parser.errNo++;
+       :}
+          |LEFTPAR  error
+         {:
+           System.out.println( "Greska u liniji " + parser.getLine() + ": " +
+           	"Nedostaje expression.");
+             parser.errNo++;
+          :};
