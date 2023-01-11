@@ -1,0 +1,57 @@
+	Load_Const	R1, 2748
+	Store		R1, b
+	Load_Const	R1, 1
+	Store		R1, che
+	Load_Const	R1, r
+	Store		R1, ch
+	Load_Const	R1, 0.0
+	Store		R1, _da
+	Load_Mem	R1, ch
+	Load_Const	R2, 123.123
+	Compare_Equal	R2, R1
+	JumpIfZero	R2, lab1
+	Load_Const	R2, b
+	Compare_Equal	R2, R1
+	JumpIfZero	R2, lab2
+	Jump	lab0
+lab1:
+	Load_Const	R1, [
+	Store		R1, _1
+	Jump	lab0
+lab2:
+	Load_Const	R1, c
+	Store		R1, jedan
+	Jump	lab0
+lab0:
+	Load_Const	R1, 1
+	Store		R1, be
+	Load_Const	R1, 1.5
+	Load_Mem	R2, be
+	Add		R1, R2
+	Store		R1, $tmp0
+	Load_Mem	R1, $tmp0
+	Store		R1, _da
+	Load_Mem	R1, ch
+	Load_Const	R2, a
+	Compare_Equal	R2, R1
+	JumpIfZero	R2, lab4
+	Load_Const	R2, b
+	Compare_Equal	R2, R1
+	JumpIfZero	R2, lab5
+	Load_Const	R2, c
+	Compare_Equal	R2, R1
+	JumpIfZero	R2, lab6
+	Jump	lab3
+lab4:
+	Load_Const	R1, a
+	Store		R1, _1
+	Jump	lab3
+lab5:
+	Load_Const	R1, b
+	Store		R1, _1
+	Jump	lab3
+lab6:
+	Load_Const	R1, c
+	Store		R1, _1
+	Jump	lab3
+lab3:

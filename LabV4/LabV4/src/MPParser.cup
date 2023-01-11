@@ -1,0 +1,180 @@
+//import sekcija
+
+import java_cup.runtime.*;
+import java.io.*;
+import java.util.*;
+
+import SymbolTable.*;
+import AST.*;
+
+parser code {:
+    SymbolTable symbolTable;
+:};
+
+init with {:
+    symbolTable = new SymbolTable();
+:}
+
+//Terminali
+terminal MAIN, INT, CHAR, FLOAT, CASE, WHEN, CONST, PLUS, MINUS;
+terminal LEFTPAR, RIGHTPAR, LEFTCURLYPAR, RIGHTCURLYPAR, ASSIGN;
+terminal SEMICOLON, COMMA, COLON;
+terminal String ID;
+terminal Integer INTCONST;
+terminal Float FLOATCONST;
+terminal Character CHARCONST;
+
+//Neterminali
+non terminal Block Program,Block,StatementList;
+non terminal Statement Statement;
+non terminal Expression Expression;
+non terminal Type Type;
+non terminal ArrayList NizImena;
+non terminal Constant  Konstanta;
+non terminal ArrayList NameList;
+non terminal Constant Constant;
+//treba
+non terminal Declarations, VarDecl;
+//ne treba
+non terminal CaseStatement CaseStatement, WhenStatement, WhenStatementList;
+non terminal AddOperator, Term;
+
+//Gramatika
+Program ::= MAIN LEFTPAR RIGHTPAR Block
+            {:
+            :};
+
+Block ::= LEFTCURLYPAR Declarations StatementList:nn RIGHTCURLYPAR
+             {:
+             RESULT = nn;
+             :};
+
+Declarations ::= Declarations VarDecl
+            {:
+            :}
+            |
+             {:
+             :};
+
+VarDecl ::= Type:t NameList:niz SEMICOLON
+                {:
+                  for ( int i=0; i<niz.size(); i++ )
+                  {
+                     String ime = (String) niz.get(i);
+                     parser.symbolTable.addVar( ime, t );
+                  }
+                :};
+
+NameList ::= NameList:niz COMMA ID:ime
+             {:
+                RESULT = niz;
+                RESULT.add( ime );
+             :}
+             | ID:ime
+             {:
+                RESULT = new ArrayList();
+                RESULT.add( ime );
+             :};
+
+Type ::= INT
+        {:
+        RESULT = parser.symbolTable.getType( "integer" );
+        :}
+      | CHAR
+        {:
+        RESULT = parser.symbolTable.getType( "char" );
+        :}
+        | FLOAT
+        {:
+        RESULT = parser.symbolTable.getType( "float" );
+        :};
+
+StatementList ::= StatementList:nn Statement:n
+         {:
+            	RESULT = nn;
+                RESULT.addStatement( n );
+         :}
+          | Statement:n
+        {:
+            RESULT = new Block();
+            RESULT.addStatement( n );
+        :};
+
+Statement ::= CaseStatement:cs
+           {:
+                RESULT = cs;
+           :}
+         | ID:ime ASSIGN Expression:i SEMICOLON
+           {:
+                RESULT = i;
+           :}
+           | Block:b
+           {:
+                RESULT = b;
+           :};
+
+CaseStatement ::= CASE LEFTPAR Expression:i RIGHTPAR LEFTCURLYPAR WhenStatementList RIGHTCURLYPAR
+            {:
+
+            :};
+
+WhenStatementList ::= WhenStatementList WhenStatement
+         {:
+         :}
+         | WhenStatement
+           {:
+           :};
+
+WhenStatement ::= WHEN CONST COLON Statement
+         {:
+         :};
+
+Expression ::= Expression:i1 AddOperator Term:i2
+          {:
+                RESULT = new Sum(i1, i2);
+          :}
+          | Term:i
+           {:
+                RESULT = i;
+           :}
+          ;
+
+AddOperator ::= PLUS
+           {:
+           :}
+           | MINUS
+           {:
+           :};
+
+Term ::= ID:ime
+           {:
+                    Variable var = parser.symbolTable.getVar( ime );
+           		   	  RESULT = new VariableExpression( var );
+           :}
+         | CONST:k
+           {:
+            RESULT = new ConstantExpression( k );
+           :}
+            | LEFTPAR Expression:i RIGHTPAR
+           {:
+                RESULT = i;
+           :};
+Constant ::= INTCONST:c
+            {:
+                 RESULT = new Constant(parser.symbolTable.getType("integer"), c );
+            :}
+            | FLOATCONST:c
+            {:
+                RESULT = new Constant(parser.symbolTable.getType("float"), c );
+            :}
+            | CHARCONST:c
+           {:
+               RESULT = new Constant(parser.symbolTable.getType("char"), c );
+           :};
+
+
+IfNar ::= IF Izraz:i THEN Naredba:n1 ELSE Naredba:n2
+          {:
+              RESULT = new IfStatement( i, n1, n2 );
+          :}
+        ;

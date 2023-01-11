@@ -1,0 +1,190 @@
+//import sekcija
+
+import java_cup.runtime.*;
+import java.io.*;
+import java.util.*;
+
+import SymbolTable.*;
+import AST.*;
+
+parser code {:
+
+	SymbolTable symbolTable;
+
+:};
+
+init with {:
+	symbolTable = new SymbolTable();
+:}
+
+
+//Terminali
+terminal MAIN, INT, CHAR, FLOAT, CASE, WHEN, PLUS, MINUS, ASSIGN;
+terminal LEFTPAR, RIGHTPAR, LEFTBRA, RIGHTBRA, COMMA, SEMICOLON, COLON;
+terminal String ID;
+terminal Integer INTCONST;
+terminal Character CHARCONST;
+terminal Float FLOATCONST;
+
+//Neterminali
+non terminal Block Program, Block, StatementList;
+non terminal Declarations;
+non terminal Statement Statement;
+non terminal CaseStatement CaseStatement;
+non terminal String AddOperator;
+
+non terminal Type Type;
+non terminal Expression Expression;
+non terminal WhenStatement WhenStatement;
+non terminal Expression Term;
+non terminal ArrayList WhenStatementList;
+non terminal Variable VarDecl;
+non terminal ArrayList NameList;
+non terminal Constant Constant;
+
+
+//Gramatika
+Program ::= MAIN LEFTPAR RIGHTPAR Block:b
+			{:
+				RESULT = b;
+			:};
+
+Block ::= LEFTBRA Declarations StatementList:b RIGHTBRA
+			{:
+				RESULT = b;
+			:};
+
+Declarations ::= Declarations VarDecl | ;
+
+VarDecl ::= Type:type NameList:niz SEMICOLON
+                {:
+                   for (int i = 0; i < niz.size(); i++)
+                   {
+                   		String id = (String) niz.get(i);
+                   		parser.symbolTable.addVar( id, type );
+                   }
+                :};
+
+NameList ::= ID:id
+             {:
+             	RESULT = new ArrayList();
+             	RESULT.add(id);
+             :}
+           | NameList:niz COMMA ID:id
+             {:
+             	RESULT = niz;
+             	RESULT.add(id);
+             :}
+           ;
+
+Type ::= INT
+			{:
+				RESULT = parser.symbolTable.getType("integer");
+			:}
+			| CHAR
+			{:
+				RESULT = parser.symbolTable.getType("char");
+			:}
+			| FLOAT
+			{:
+				RESULT = parser.symbolTable.getType("float");
+			:};
+
+StatementList ::= StatementList:sl Statement:s
+			{:
+				RESULT = sl;
+				RESULT.addStatement( s );
+			:}
+			| Statement:s
+			{:
+				RESULT = new Block();
+				RESULT.addStatement( s );
+			:};
+
+Statement ::= CaseStatement:cs
+			{:
+				RESULT = cs;
+			:}
+			| ID:id ASSIGN Expression:ex SEMICOLON
+			{:
+				Variable var = parser.symbolTable.getVar(id);
+				RESULT = new Assignment(var, ex);
+			:}
+			| Block:b
+			{:
+				RESULT = b;
+			:};
+
+CaseStatement ::= CASE LEFTPAR Expression:ex RIGHTPAR LEFTBRA WhenStatementList:wsl RIGHTBRA
+			{:
+				RESULT = new CaseStatement(ex, wsl);
+			:};
+
+WhenStatementList ::= WhenStatementList:wsl WhenStatement:ws
+			{:
+				RESULT = wsl;
+				RESULT.add(ws);
+			:}
+			| WhenStatement:ws
+			{:
+				RESULT = new ArrayList();
+				RESULT.add(ws);
+			:};
+
+WhenStatement ::= WHEN Constant:c COLON Statement:s
+			{:
+				ConstantExpression ce = new ConstantExpression(c);
+				RESULT = new WhenStatement(ce, s);
+			:};
+
+Expression ::= Expression:ex AddOperator:ao Term:t
+			{:
+				if (ao.equals("PLUS"))
+				{
+					RESULT = new Sum(ex, t);
+				}
+				else
+				{
+					RESULT = new Sub(ex, t);
+				}
+			:}
+			| Term:t
+			{:
+				RESULT = t;
+			:};
+
+AddOperator ::= PLUS
+			{:
+				RESULT = "PLUS";
+			:}
+			| MINUS
+			{:
+				RESULT = "MINUS";
+			:};
+
+Term ::= ID:id
+			{:
+				Variable var = parser.symbolTable.getVar(id);
+				RESULT = new VariableExpression(var);
+			:}
+			| Constant:c
+			{:
+				RESULT = new ConstantExpression(c);
+			:}
+			| LEFTPAR Expression:ex RIGHTPAR
+			{:
+				RESULT = ex;
+			:};
+
+Constant ::= INTCONST:c
+			{:
+				RESULT = new Constant(parser.symbolTable.getType("integer"), c);
+			:}
+			| CHARCONST:c
+			{:
+				RESULT = new Constant(parser.symbolTable.getType("char"), c, true);
+			:}
+			| FLOATCONST:c
+			{:
+				RESULT = new Constant(parser.symbolTable.getType("float"), c);
+			:};

@@ -1,0 +1,22 @@
+main()
+{
+ 	int b, be; char ch, che; float _da, da; char _1, jedan;
+ 	b = 0hex0ABC;
+ 	che = 1;
+ 	ch = 'r';
+ 	_da = 1.E-12312;
+ 	case (ch)
+ 	{
+ 		when 123.123: _1 = '[';
+ 		when 'b': jedan = 'c';
+ 	}
+ 	be = 1;
+ 	_da = 1.5 + be;
+ 	case (ch)
+ 	{
+ 		when 'a': _1 = 'a';
+ 		when 'b': _1 = 'b';
+ 		when 'c': _1 = 'c';
+ 	}
+}
+
